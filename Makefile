@@ -24,4 +24,4 @@ coverage:
 
 .PHONY: runserver
 runserver:
-	FLASK_APP=habraproxy/habraproxy.py FLASK_ENV=development flask run
+	FLASK_APP=habraproxy/app.py FLASK_ENV=development flask run
