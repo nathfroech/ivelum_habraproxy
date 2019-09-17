@@ -1,0 +1,154 @@
+---
+fail_fast: false
+repos:
+  # Meta checks (for configuration itself)
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply  # Ensure that the configured hooks apply to at least one file in the repository
+        always_run: true
+      - id: check-useless-excludes  # Ensure that exclude directives apply to any file in the repository
+        always_run: true
+  # General checks for all files
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.3
+    hooks:
+      - id: check-added-large-files  # Prevent giant files from being committed
+        stages:
+          - commit
+      - id: check-byte-order-marker  # Forbid files which have a UTF-8 byte-order marker
+        stages:
+          - commit
+      - id: check-case-conflict  # Check for files that would conflict in case-insensitive filesystems
+        stages:
+          - commit
+      - id: check-executables-have-shebangs  # Ensures that (non-binary) executables have a shebang.
+        stages:
+          - commit
+      - id: check-merge-conflict  # Check for files that contain merge conflict strings.
+        stages:
+          - commit
+      - id: check-vcs-permalinks  # Ensures that links to vcs websites are permalinks.
+        stages:
+          - commit
+
+      # These hooks will change files
+      - id: end-of-file-fixer  # Ensures that a file is either empty, or ends with one newline.
+        stages:
+          - commit
+      - id: mixed-line-ending  # Replaces or checks mixed line ending
+        args: [--fix=lf]
+        stages:
+          - commit
+      - id: trailing-whitespace  # This hook trims trailing whitespace.
+        stages:
+          - commit
+  - repo: local
+    hooks:
+      - id: hyphen-filenames
+        name: Check file names for hyphens
+        entry: Hyphens should not be used in file names, use underscores instead
+        language: fail
+        files: '.*-.*'
+        exclude: '.pre-commit-config.yaml'
+      - id: camelcase-filenames
+        name: Check file names for camelcase
+        entry: Capital letters should not be used in file names, use snake_case everywhere
+        language: fail
+        files: '.*[A-Z].*'
+        exclude: 'LICENSE|Makefile|README'
+  # Python checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.3
+    hooks:
+      - id: check-ast  # Simply check whether the files parse as valid python.
+        stages:
+          - commit
+      - id: check-docstring-first  # Checks a common error of defining a docstring after code.
+        stages:
+          - commit
+      - id: debug-statements  # Check for debugger imports and py37+ `breakpoint()` calls in python source.
+        stages:
+          - commit
+  - repo: local
+    hooks:
+      - id: python-check-noqa-case
+        name: check noqa occurences with incorrect cases
+        description: 'Enforce that `noqa` annotations always occur in lowercase, no `NoQA` or `NOQA` allowed'
+        entry: '# (N[Oo][Qq][Aa])|([Nn]O[Qq][Aa])|([Nn][Oo]Q[Aa])|([Nn][Oo][Qq]A)'
+        language: pygrep
+        types: [python]
+        stages:
+          - commit
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.4.0
+    hooks:
+      - id: python-check-mock-methods  # Prevent a mistake of assert mck.not_called() or assert mck.called_once_with()
+        stages:
+          - commit
+      - id: python-no-log-warn  # A quick check for the deprecated .warn() method of python loggers
+        stages:
+          - commit
+      - id: python-use-type-annotations  # Enforce that python3.6+ type annotations are used instead of type comments
+        stages:
+          - commit
+  - repo: local
+    hooks:
+      - id: flake8
+        name: Check python files (code style - flake8)
+        entry: flake8
+        language: system
+        args: [--config=setup.cfg]
+        types: [python]
+        stages:
+          - commit
+      # This hook will change files
+      - id: yesqa
+        name: Check python files (obsolete noqa comments)
+        entry: yesqa
+        language: system
+        types: [python]
+        stages:
+          - commit
+      - id: mypy
+        name: Check python files (typing - mypy)
+        entry: mypy
+        language: system
+        args: [--config-file, setup.cfg]
+        types: [python]
+        stages:
+          - commit
+  # Other specific files and file types checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.3
+    hooks:
+      - id: detect-private-key  # Detects the presence of private keys
+        stages:
+          - commit
+      - id: check-yaml  # This hook checks yaml files for parseable syntax.
+        stages:
+          - commit
+  - repo: local
+    hooks:
+      - id: yamllint
+        name: Check yaml files
+        entry: yamllint
+        args: [-c, .yamllint]
+        language: system
+        files: \.ya?ml$
+        stages:
+          - commit
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.4.0
+    hooks:
+      - id: rst-backticks  # Detect common mistake of using single backticks when writing rst
+        stages:
+          - commit
+  - repo: local
+    hooks:
+      - id: rst-lint
+        name: Check rst files
+        entry: rst-lint
+        language: system
+        files: \.rst$
+        stages:
+          - commit

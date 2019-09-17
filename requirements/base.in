@@ -1,0 +1,5 @@
+# Core project requirements, which are essential for its work.
+
+flask
+
+environs

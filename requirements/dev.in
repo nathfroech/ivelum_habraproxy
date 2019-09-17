@@ -1,0 +1,20 @@
+# Requirements that are needed for development or testing environments: test tools, linters, compilers and so on
+
+-r ./base.in
+
+pip-tools
+
+# Linters
+pre-commit
+yamllint
+restructuredtext-lint
+pygments # Required for restructuredtext-lint
+mypy
+
+wemake-python-styleguide
+yesqa
+
+# Tests
+pytest
+pytest-cov
+PyHamcrest
