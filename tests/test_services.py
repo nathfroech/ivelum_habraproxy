@@ -73,6 +73,11 @@ content_processor_cases = [
         id='scripts',
     ),
     pytest.param(
+        '<html><body><a href="https://habr.com/ru/post/467875/">Another page link</a></body></html>',
+        '<html><body><a href="http://{{ origin }}/ru/post/467875/">Another page link</a></body></html>',
+        id='links_to_other_site_pages',
+    ),
+    pytest.param(
         """
             <html><head>
             <meta name="description" content="Самое важное из ИТ мира на сегодня: новости науки и высоких технологий, разработки, гаджетов, игр, бизнеса и другие." />
@@ -209,6 +214,26 @@ class TestSiteProxy:
         processed_text = site_proxy.process_text(input_text)
 
         assert_that(processed_text, is_(equal_to(expected_output)))
+
+    # Tests for SiteProxy.process_url()
+    @pytest.mark.parametrize('url,expected_output', [
+        pytest.param('https://habr.com/ru/post/467875/', 'http://{{ origin }}/ru/post/467875/', id='same_schema'),
+        pytest.param('http://habr.com/ru/post/467875/', 'http://{{ origin }}/ru/post/467875/', id='http_vs_https'),
+        pytest.param('//habr.com/ru/post/467875/', 'http://{{ origin }}/ru/post/467875/', id='double_slash_start'),
+        pytest.param('habr.com/ru/post/467875', 'http://{{ origin }}/ru/post/467875', id='no_schema'),
+        pytest.param(
+            'https://stackoverflow.com/questions/tagged/python',
+            'https://stackoverflow.com/questions/tagged/python',
+            id='another_origin',
+        ),
+        pytest.param('/ru/post/467875/', '/ru/post/467875/', id='relative_url'),
+    ])
+    def test_url_origin_changed(self, url, expected_output):
+        site_proxy = SiteProxy('https://habr.com')
+
+        processed_url = site_proxy.process_url(url)
+
+        assert_that(processed_url, is_(equal_to(expected_output)))
 
     # Tests for SiteProxy.process_content()
     @pytest.mark.parametrize('input_content,expected_output', content_processor_cases)

@@ -9,10 +9,10 @@ REPLACE_PATTERN = re.compile(r'(?<![A-Za-zА-Яа-яЁё\-_])([A-Za-zА-Яа-я�
 
 class SiteProxy:
     def __init__(self, origin: str):
-        self.origin = origin
+        self.origin = urlpath.URL(origin)
 
     def request_page(self, path: str) -> str:
-        url = str(urlpath.URL(self.origin, path))
+        url = str(self.origin.joinpath(path))
         response = requests.get(url)
         return response.content.decode('utf-8')
 
@@ -29,6 +29,20 @@ class SiteProxy:
             else:
                 processed_chunks.append(REPLACE_PATTERN.sub(r'\1™', chunk))
         return ' '.join(processed_chunks)
+
+    def process_url(self, url_to_process: str) -> str:
+        url = urlpath.URL(url_to_process)
+        if url.hostinfo == self.origin.hostinfo:
+            return str(url.with_components(scheme='http', hostname='{{ origin }}'))
+        elif not url.hostinfo and url.parts[0] == self.origin.hostinfo:
+            # Url does not have schema, but is not relative
+            return str(url.with_components(
+                scheme='http',
+                hostname='{{ origin }}',
+                path='/'.join(url.parts[1:]),
+            ))
+        else:
+            return url_to_process
 
     def process_content(self, content: str) -> str:
         # Manually extract doctype, because lxml looses it.
@@ -65,6 +79,8 @@ class SiteProxy:
             self._process_element_attribute(element, 'content')
         for child in element:
             self._process_element(child)
+        if element.tag == 'a' and 'href' in element.attrib:
+            element.attrib['href'] = self.process_url(element.attrib['href'])
         return element
 
     def _post_process_content(self, processed_content: str) -> str:
@@ -75,4 +91,6 @@ class SiteProxy:
         processed_content = processed_content.replace('viewbox=', 'viewBox=')
         # Restore non-breaking spaces as named HTML entities
         processed_content = processed_content.replace('\u00a0', '&nbsp;')
+        # Unescape urls - Jinja will take care about them
+        processed_content = processed_content.replace('%7B%7B%20origin%20%7D%7D', '{{ origin }}')
         return processed_content
