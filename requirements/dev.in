@@ -17,4 +17,6 @@ yesqa
 # Tests
 pytest
 pytest-cov
+pytest-mock
 PyHamcrest
+requests_mock
