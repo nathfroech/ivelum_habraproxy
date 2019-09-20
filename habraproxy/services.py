@@ -93,4 +93,11 @@ class SiteProxy:
         processed_content = processed_content.replace('\u00a0', '&nbsp;')
         # Unescape urls - Jinja will take care about them
         processed_content = processed_content.replace('%7B%7B%20origin%20%7D%7D', '{{ origin }}')
+        # Update static urls
+        processed_content = processed_content.replace(
+            'https://habr.com/images/1567794742/common-svg-sprite.svg',
+            '/static/images/1567794742/common-svg-sprite.svg',
+        )
+        processed_content = processed_content.replace('url(/fonts', 'url(/static/fonts')
+        processed_content = processed_content.replace('href="/images', 'href="/static/images')
         return processed_content

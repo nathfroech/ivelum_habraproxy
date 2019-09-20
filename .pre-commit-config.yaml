@@ -49,13 +49,13 @@ repos:
         entry: Hyphens should not be used in file names, use underscores instead
         language: fail
         files: '.*-.*'
-        exclude: '.pre-commit-config.yaml'
+        exclude: '\.pre-commit-config\.yaml|habraproxy/static/'
       - id: camelcase-filenames
         name: Check file names for camelcase
         entry: Capital letters should not be used in file names, use snake_case everywhere
         language: fail
         files: '.*[A-Z].*'
-        exclude: 'LICENSE|Makefile|README'
+        exclude: 'LICENSE|Makefile|README|habraproxy/static/'
   # Python checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.2.3

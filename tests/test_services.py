@@ -107,6 +107,11 @@ content_processor_cases = [
         id='svg_use',
     ),
     pytest.param(
+        '<html><body><svg><use xlink:href="https://habr.com/images/1567794742/common-svg-sprite.svg#close"/></svg></body></html>',
+        '<html><body><svg><use xlink:href="/static/images/1567794742/common-svg-sprite.svg#close"></use></svg></body></html>',
+        id='svg_use_href',
+    ),
+    pytest.param(
         """<html><body><div>
            Уникальное для России ежегодное мероприятие, целиком посвящённое тематике нейрокомпьютерных интерфейсов, пройдёт с 3 по 5 октября 2019 года. Но регистрация для участников закончится уже 25 сентября.
            <br>
