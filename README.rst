@@ -22,6 +22,8 @@ Getting started
 
 Initial project setup
 ^^^^^^^^^^^^^^^^^^^^^
+Prerequisites: Python 3.6
+
 Make these commands from project root:
 
 .. code:: bash
@@ -29,16 +31,9 @@ Make these commands from project root:
   make virtualenv
   source env/bin/activate
   make requirements
-  make env_file
   pre-commit install
 
-
-Settings configuration
-^^^^^^^^^^^^^^^^^^^^^^
-All environment-dependent or confidential settings should be declared as environment variables. As an alternative, you
-may create ``.env`` file at project root, which would contain all such variables.
-
-Command ``make env_file`` will create such file with defaults, that should be replaced with actual values.
+After that you may run an app with ``FLASK_APP=habraproxy/app.py FLASK_ENV=development flask run``
 
 Updating requirements
 ^^^^^^^^^^^^^^^^^^^^^

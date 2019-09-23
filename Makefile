@@ -6,10 +6,6 @@ virtualenv:
 requirements:
 	@bash helpers/update_requirements.sh
 
-.PHONY: env_file
-env_file:
-	@python helpers/generate_env_file.py
-
 .PHONY: lint
 lint:
 	@pre-commit run --all-files
