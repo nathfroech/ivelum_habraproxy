@@ -55,7 +55,7 @@ repos:
         entry: Capital letters should not be used in file names, use snake_case everywhere
         language: fail
         files: '.*[A-Z].*'
-        exclude: 'LICENSE|Makefile|README|habraproxy/static/'
+        exclude: 'LICENSE|Makefile|README|habraproxy/static/|Dockerfile'
   # Python checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.2.3

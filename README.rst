@@ -22,7 +22,7 @@ Getting started
 
 Initial project setup
 ^^^^^^^^^^^^^^^^^^^^^
-Prerequisites: Python 3.6
+Prerequisites: Python 3.6 and, optionally, Docker
 
 Make these commands from project root:
 
@@ -33,7 +33,14 @@ Make these commands from project root:
   make requirements
   pre-commit install
 
-After that you may run an app with ``FLASK_APP=habraproxy/app.py FLASK_ENV=development flask run``
+After that you may run an app with ``FLASK_APP=habraproxy/app.py FLASK_ENV=development flask run``.
+
+Alternatively, you may run the application with Docker:
+
+.. code:: bash
+
+    docker build . -t habraproxy
+    docker run --rm -d --name habraproxy -p 5000:5000 habraproxy flask run --host=0.0.0.0 --port=5000
 
 Updating requirements
 ^^^^^^^^^^^^^^^^^^^^^
