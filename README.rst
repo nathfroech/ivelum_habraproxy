@@ -9,7 +9,13 @@ Habraproxy
 Proxy for https://habr.com that shows content from this site, but modifies pages so that after each 6-symbols word ™
 sign is added.
 
-* Free software: MIT license
+Things that were not implemented:
+
+* Form submitting most likely will return 4** or 5** responses in most cases.
+* Some static files may be missing.
+* Some ad banners and other services integrations may not work at all or be displayed incorrectly.
+
+Free software: MIT license
 
 Getting started
 ---------------
